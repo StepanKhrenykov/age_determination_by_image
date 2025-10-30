@@ -1,0 +1,193 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border-radius: 0.5rem;
+    border: none;
+    margin-bottom: 1rem;
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+canvas {
+    width: 100% !important;
+    height: 250px !important;
+}
+
+.confusion-matrix {
+    display: inline-block;
+    margin: 0 auto;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.confusion-matrix table {
+    border-collapse: collapse;
+    margin: 1rem auto;
+    font-size: 0.9rem;
+}
+
+.confusion-matrix th, .confusion-matrix td {
+    border: 1px solid #dee2e6;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+.confusion-matrix th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.confusion-matrix .cm-value {
+    font-weight: bold;
+}
+
+.confusion-matrix .diagonal {
+    background-color: rgba(40, 167, 69, 0.2);
+}
+
+.confusion-matrix .off-diagonal {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Стиль для заголовков оси */
+.cm-axis-label {
+    font-weight: bold;
+    padding: 0.5rem;
+}
+
+/* Стили для выпадающего списка */
+.input-group-text {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+.form-select {
+    min-width: 150px;
+    cursor: pointer;
+}
+
+/* Стили для таблицы метрик */
+.table-sm td, .table-sm th {
+    padding: 0.4rem;
+}
+
+.table-sm tbody tr:nth-child(odd) {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Стили для значений метрик */
+.metric-value {
+    font-weight: bold;
+    font-family: monospace;
+}
+
+/* Стили для статусных значений (Эпоха, Learning Rate) */
+.status-value {
+    font-size: 1.1rem;
+}
+
+.status-value .fw-bold {
+    font-size: 1.2rem;
+}
+
+/* Дополнительные стили для нового расположения */
+.col-md-8 .confusion-matrix {
+    width: 100%;
+    max-width: 100%;
+}
+
+.col-md-4 .card {
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.col-md-4 .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для таблиц метрик в правой колонке */
+.col-md-4 .table {
+    margin-bottom: 0;
+}
+
+.col-md-4 .table-sm td, 
+.col-md-4 .table-sm th {
+    padding: 0.5rem;
+    vertical-align: middle;
+}
+
+.col-md-4 .metric-value {
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 1.05rem;
+}
+
+@media (min-width: 1200px) {
+    .confusion-matrix table {
+        font-size: 1rem;
+    }
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 992px) {
+    .confusion-matrix td, .confusion-matrix th {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+    
+    .card-header .d-flex {
+        margin-top: 0.5rem;
+        width: 100%;
+        flex-direction: column;
+    }
+    
+    .card-header .btn-group {
+        margin-bottom: 0.5rem;
+        width: 100%;
+    }
+    
+    .card-header .btn-group .btn {
+        flex: 1;
+    }
+    
+    .input-group {
+        margin-top: 0.5rem;
+        width: 100% !important;
+    }
+    
+    #cmLatestBtn {
+        width: 100%;
+        margin-right: 0 !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    .col-md-8, .col-md-4 {
+        width: 100%;
+    }
+    
+    .col-md-4 {
+        margin-top: 1.5rem;
+    }
+    
+    .col-md-4 .card {
+        height: auto !important;
+    }
+}

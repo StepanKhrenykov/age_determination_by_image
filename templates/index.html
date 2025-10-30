@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Метрики обучения нейросети</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <!-- Стили -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container-fluid mt-3">
+        <h1 class="text-center mb-4">Метрики обучения нейросети</h1>
+        
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4>Статус обучения</h4>
+                        <div class="d-flex align-items-center">
+                            <span class="me-3 status-value">Эпоха: <span id="epoch" class="fw-bold">-</span></span>
+                            <span class="status-value">Learning Rate: <span id="lr" class="fw-bold">-</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Графики Loss и Accuracy -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h4>Loss</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="lossChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h4>Accuracy</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="accuracyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Матрицы ошибок -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4>Матрицы ошибок</h4>
+                        <div class="d-flex align-items-center">
+                            <button type="button" class="btn btn-outline-primary active me-2" id="cmLatestBtn">Последняя эпоха</button>
+                            <div class="input-group" style="width: auto;">
+                                <label class="input-group-text" for="confusionMatrixEpochSelect">Выбрать эпоху:</label>
+                                <select class="form-select" id="confusionMatrixEpochSelect">
+                                    <option value="" disabled>Выберите эпоху</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Колонка с матрицами ошибок (слева) -->
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <!-- Нормализованные матрицы ошибок -->
+                                    <div class="col-md-6 mb-4">
+                                        <h5 class="text-center mb-3">Validation (нормализованная)</h5>
+                                        <div id="validationConfusionMatrixNormContainer" class="text-center">
+                                            <div id="validationConfusionMatrixNorm" class="confusion-matrix"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <h5 class="text-center mb-3">Train (нормализованная)</h5>
+                                        <div id="trainConfusionMatrixNormContainer" class="text-center">
+                                            <div id="trainConfusionMatrixNorm" class="confusion-matrix"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Обычные матрицы ошибок -->
+                                    <div class="col-md-6 mb-4">
+                                        <h5 class="text-center mb-3">Validation</h5>
+                                        <div id="validationConfusionMatrixContainer" class="text-center">
+                                            <div id="validationConfusionMatrix" class="confusion-matrix"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <h5 class="text-center mb-3">Train</h5>
+                                        <div id="trainConfusionMatrixContainer" class="text-center">
+                                            <div id="trainConfusionMatrix" class="confusion-matrix"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Колонка с метриками (справа) -->
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h5>Метрики для выбранной эпохи</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-4">
+                                            <h6 class="text-center">Validation</h6>
+                                            <table class="table table-bordered table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Метрика</th>
+                                                        <th>Значение</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Loss</td>
+                                                        <td id="validation-loss" class="metric-value">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Accuracy</td>
+                                                        <td id="validation-accuracy" class="metric-value">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Precision</td>
+                                                        <td id="validation-precision" class="metric-value">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Recall</td>
+                                                        <td id="validation-recall" class="metric-value">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>F1</td>
+                                                        <td id="validation-f1" class="metric-value">-</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        <div>
+                                            <h6 class="text-center">Train</h6>
+                                            <table class="table table-bordered table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Метрика</th>
+                                                        <th>Значение</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Loss</td>
+                                                        <td id="train-loss" class="metric-value">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Accuracy</td>
+                                                        <td id="train-accuracy" class="metric-value">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Precision</td>
+                                                        <td id="train-precision" class="metric-value">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Recall</td>
+                                                        <td id="train-recall" class="metric-value">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>F1</td>
+                                                        <td id="train-f1" class="metric-value">-</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Остальные метрики -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h4>Precision</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="precisionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h4>Recall</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="recallChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h4>F1 Score</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="f1Chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & jQuery JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <!-- Основной скрипт -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
